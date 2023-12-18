@@ -1,0 +1,10 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+.dockerignore
+.docker/
+docker-compose.yml
+docker-compose.override.yml
