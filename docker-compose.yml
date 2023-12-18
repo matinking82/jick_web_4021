@@ -5,7 +5,7 @@ services:
       context: ./jick_front/
       dockerfile: Dockerfile
     ports:
-      - 5173:3000
+      - 5173:5173
     depends_on:
       - backend
 
@@ -14,4 +14,4 @@ services:
       context: ./jick_backend/
       dockerfile: Dockerfile
     ports:
-      - 8000:8080
+      - 8000:8000

@@ -1,5 +1,5 @@
 # Use an official Node.js image as the base
-FROM node:14-alpine
+FROM node:18-alpine
 
 # Set the working directory in the container
 WORKDIR /app
@@ -13,11 +13,8 @@ RUN npm install
 # Copy the project files to the container
 COPY . .
 
-# Build the project
-RUN npm run build
-
 # Expose the port that the application will run on
-EXPOSE 3000
+EXPOSE 5173
 
 # Define the command to run the application
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
