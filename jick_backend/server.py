@@ -5,8 +5,11 @@ from sqlalchemy.orm import Session
 
 load_dotenv()
 
+from models import *
 from routers.client import authenticationRouter
-from Database.context import get_db,User
+from Database.context import Base,engine
+
+Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
@@ -20,5 +23,5 @@ app.include_router(
 
 
 @app.get("/")
-async def root(db:Session = Depends(get_db)):
+async def root():
     return {"message": "Hello World Im Jick Backend"}
