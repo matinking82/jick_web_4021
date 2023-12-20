@@ -1,6 +1,5 @@
 from fastapi import FastAPI,Depends
 from dotenv import load_dotenv
-from sqlalchemy.orm import Session
 
 
 load_dotenv()
