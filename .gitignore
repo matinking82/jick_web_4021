@@ -78,3 +78,5 @@ jick_backend.ipynb_checkpoints/
 
 # Log files
 jick_backend*.log
+
+*__pycache__
