@@ -80,3 +80,4 @@ jick_backend.ipynb_checkpoints/
 jick_backend*.log
 jick_backend/.env
 *__pycache__
+*.db
