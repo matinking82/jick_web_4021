@@ -1,15 +1,10 @@
-from fastapi import FastAPI,Depends
+from fastapi import FastAPI, Depends
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
-from models import *
 from routers.client import authenticationRouter
-from Database.context import Base,engine
-
-Base.metadata.create_all(bind=engine)
-
+from Database.context import Base, engine
 
 app = FastAPI()
 
