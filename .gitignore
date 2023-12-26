@@ -82,3 +82,4 @@ jick_backend/.env
 *__pycache__
 
 jick_backend/alembic/versions/*
+*.db

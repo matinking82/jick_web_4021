@@ -20,3 +20,4 @@ SQLAlchemy==2.0.23
 starlette==0.27.0
 typing_extensions==4.9.0
 alembic==1.13.1
+uvicorn==0.25.0
