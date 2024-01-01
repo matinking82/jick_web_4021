@@ -22,3 +22,12 @@ class UpdateUserProfile(BaseModel):
     username: str
     full_name: str
     age: int
+    
+class ChangePassword(BaseModel):
+    old_password: str
+    new_password: str
+    
+class forgotPasswordChange(BaseModel):
+    guid_token: str
+    new_password: str
+    
