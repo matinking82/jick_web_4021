@@ -3,6 +3,7 @@ import services.client.userDbServices as userDbServices
 from fastapi import HTTPException, status,Request
 
 async def checkTokenMiddleWare(request: Request, call_next):
+    request.state.IsAuthenticated = False
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
 
     if token == "":

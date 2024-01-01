@@ -35,6 +35,10 @@ def user_login(user: UserLogin, session: Session = Depends(get_db)):
     if not result:
         raise HttpException(status_code=404, detail="User not found")
 
-    token = Jwt.createJWT(Jwt.JwtPayload(id=result.id, email=result.email))
+    plod = Jwt.JwtPayload()
+    plod.id = result.id
+    plod.email = result.email
+    
+    token = Jwt.createJWT(plod)
 
     return {"token": token, "token_type": "bearer"}
