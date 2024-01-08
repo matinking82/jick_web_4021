@@ -12,11 +12,11 @@ class UserLogin(BaseModel):
 
 
 class UserProfile(BaseModel):
-    username: str
-    email: str
-    full_name: str
-    age: int
-    create_date: str
+    username: str | None
+    email: str | None
+    full_name: str | None
+    age: int | None
+    create_date: str | None
 
 class UpdateUserProfile(BaseModel):
     username: str

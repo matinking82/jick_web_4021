@@ -7,6 +7,7 @@ import uvicorn
 load_dotenv()
 
 from routers.client import authenticationRouter
+from routers.client import userRouter
 from Database.context import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 from middlewares.authorization import checkTokenMiddleWare
@@ -23,6 +24,12 @@ app.include_router(
     tags=["user"],
     responses={404: {"description": "Not found"}},
 )
+
+app.include_router(
+    router = userRouter.router,
+    prefix="/user",
+    tags=["profile"]
+    )
 
 
 @app.get("/")

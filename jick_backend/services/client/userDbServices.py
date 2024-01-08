@@ -1,25 +1,29 @@
+from typing import Annotated
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
 from Database.context import get_db
 from models.user import User
 from schemas.user import *
 from utils import guidGenerator, passwordHasher
 from sqlalchemy.orm import Session
 
-
 # user auth
 def registerUser(user: UserRegister, session: Session):
     try:
+        current_user = user
         user = session.query(User).filter(User.email == user.email).first()
         if user is not None:
             if user.is_active:
                 return
-            else:
+            else: 
                 # delete
+                current_user = user
                 session.delete(user)
                 session.commit()
 
         newUser = User(
-            email=user.email,
-            password=passwordHasher.hashPass(user.password),
+            email=current_user.email,
+            password=passwordHasher.hashPass(current_user.password),
             guid_token=guidGenerator.generateGUID(),
         )
         session.add(newUser)
@@ -46,8 +50,6 @@ def activateUser(guid_token: str, session: Session):
 def loginUser(user: UserLogin, session: Session):
     try:
         foundUser = session.query(User).filter(User.email == user.email).first()
-        print(user.email)
-        print(foundUser)
         if foundUser is None or not foundUser.is_active:
             return
 
@@ -70,21 +72,21 @@ def isUserActive(user_id: int, session: Session):
 
 
 # user profile
-def getUserProfile(user_id: int, session: Session):
+def getUserProfile(user_id:int, session: Session):
     try:
         foundUser = session.query(User).filter(User.id == user_id).first()
         if foundUser is None:
             return
-        result = UserProfile()
-        result.username = foundUser.username
-        result.email = foundUser.email
-        result.full_name = foundUser.full_name
-        result.age = foundUser.age
-        result.create_date = foundUser.create_date
+        result = UserProfile(
+            username = foundUser.username,
+            email= foundUser.email,
+            full_name=foundUser.full_name,
+            age = foundUser.age,
+            create_date= str(foundUser.create_date)            
+        )
         return result
     except Exception as e:
         print(e)
-
 
 def updateUserProfile(user_id: int, user: UpdateUserProfile, session: Session):
     try:
@@ -96,12 +98,14 @@ def updateUserProfile(user_id: int, user: UpdateUserProfile, session: Session):
         foundUser.age = user.age
         session.commit()
 
-        result = UserProfile()
-        result.username = foundUser.username
-        result.email = foundUser.email
-        result.full_name = foundUser.full_name
-        result.age = foundUser.age
-        result.create_date = foundUser.create_date
+        result = UserProfile(
+            username=foundUser.username,
+            email= foundUser.email,
+            full_name = foundUser.full_name,
+            age = foundUser.age,
+            create_date= str(foundUser.create_date)
+     
+        )
         return result
     except Exception as e:
         print(e)
