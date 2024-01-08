@@ -5,7 +5,8 @@ import os
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from models import *
+from models import post
+from models import user
 from Database.context import Base
 
 from alembic import context
@@ -24,7 +25,6 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
-print(target_metadata)
 context.config.set_main_option("sqlalchemy.url", os.environ["DBUrl"])
 
 # other values from the config, defined by the needs of env.py,

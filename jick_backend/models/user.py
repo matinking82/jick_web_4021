@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy.orm import relationship
 from Database.context import Base
 import datetime
 
@@ -14,6 +15,8 @@ class User(Base):
     full_name = Column(String(100))
     age = Column(Integer)
     create_date = Column(DateTime, default=datetime.datetime.utcnow)
+
+    posts = relationship("Post", back_populates="post")
 
     def __repr__(self):
         return f"<User(username='{self.username}', email='{self.email}')>"
