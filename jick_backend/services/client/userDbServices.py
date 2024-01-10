@@ -1,7 +1,3 @@
-from typing import Annotated
-from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
-from Database.context import get_db
 from models.user import User
 from schemas.user import *
 from utils import guidGenerator, passwordHasher

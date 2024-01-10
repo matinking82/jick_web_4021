@@ -16,7 +16,6 @@ class User(Base):
     age = Column(Integer)
     create_date = Column(DateTime, default=datetime.datetime.utcnow)
 
-    posts = relationship("Post", back_populates="post")
 
     def __repr__(self):
         return f"<User(username='{self.username}', email='{self.email}')>"
