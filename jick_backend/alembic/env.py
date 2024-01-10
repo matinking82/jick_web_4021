@@ -5,8 +5,7 @@ import os
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from models import post
-from models import user
+from models import *
 from Database.context import Base
 
 from alembic import context
