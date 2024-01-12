@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends,Request
-from fastapi.security import OAuth2PasswordBearer
 from Database.context import  get_db
 from services.client.userDbServices import getUserProfile, isUserActive, loginUser, updateUserProfile
-from schemas.user import UpdateUserProfile, UserLogin, UserProfile
+from schemas.user import UpdateUserProfile, UserProfile
 from sqlalchemy.orm import Session
 from models.user import User
 from fastapi.exceptions import HTTPException as HttpException
@@ -10,7 +9,6 @@ from fastapi.exceptions import HTTPException as HttpException
 
 
 router = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.get("/get/",response_model=UserProfile)
 def get_profile(request:Request,session: Session = Depends(get_db)):
