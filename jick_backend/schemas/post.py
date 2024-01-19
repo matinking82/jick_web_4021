@@ -14,3 +14,7 @@ class GetPostsResponseItem(BaseModel):
     images: list[str]
     senderUsername: str | None
 
+
+class ReactPostRequest(BaseModel):
+    postId: int
+    like: bool

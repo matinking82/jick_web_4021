@@ -1,4 +1,4 @@
-from models.user import User
+from models.user import User,UserFollow
 from schemas.user import *
 from utils import guidGenerator, passwordHasher
 from sqlalchemy.orm import Session
@@ -144,3 +144,24 @@ def changeForgottenPassword(user:forgotPasswordChange, session: Session):
         return foundUser
     except Exception as e:
         print(e)
+
+def followUser(user_id: int, username: str, session: Session):
+    try:
+        foundUser = session.query(User).filter(User.id == user_id).first()
+        if foundUser is None:
+            return
+        userToFollow = session.query(User).filter(User.username == username).first()
+        if userToFollow is None:
+            return
+        
+        follow = UserFollow()
+        follow.followerId = user_id
+        follow.followingId = userToFollow.id
+        session.add(follow)
+                
+        session.commit()
+        return True
+    
+    except Exception as e:
+        print(e)
+        return False

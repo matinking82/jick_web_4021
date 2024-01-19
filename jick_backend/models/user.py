@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from Database.context import Base
 import datetime
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -16,7 +17,14 @@ class User(Base):
     age = Column(Integer)
     create_date = Column(DateTime, default=datetime.datetime.utcnow)
 
-
     def __repr__(self):
         return f"<User(username='{self.username}', email='{self.email}')>"
 
+
+class UserFollow(Base):
+    __tablename__ = "user_follow"
+
+    id = Column(Integer, primary_key=True)
+    followerId = Column(Integer)
+    followingId = Column(Integer)
+    create_date = Column(DateTime, default=datetime.datetime.utcnow)

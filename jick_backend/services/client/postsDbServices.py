@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
-from schemas.post import CreatePostRequest, GetPostsResponseItem
+from schemas.post import CreatePostRequest, GetPostsResponseItem, ReactPostRequest
 from models.post import Post, PostImage
 from models.user import User
+from models.postReaction import postReaction
 
 
 def addPostForUser(post: CreatePostRequest, session: Session):
@@ -37,10 +38,10 @@ def getPostsForUser(userId: int, session: Session):
 
             sender = session.query(User).filter(User.id == post.id_sender).first()
             images = session.query(PostImage).filter(PostImage.postId == post.id).all()
-            
+
             item.images = [image.imageAdress for image in images]
             item.senderUsername = sender.username
-            
+
             result.append(item)
 
         return result
@@ -60,6 +61,34 @@ def deletePost(postId: int, userId: int, session: Session):
             return True
 
         return False
+    except Exception as e:
+        print(e)
+        return False
+
+
+def reactToPost(userId: int, reactRequest: ReactPostRequest, session: Session):
+    try:
+        post = session.query(Post).filter(Post.id == reactRequest.postId).first()
+        if post is None:
+            return False
+
+        postReactioncreate = (
+            session.query(postReaction)
+            .filter(postReaction.postId == reactRequest.postId)
+            .filter(postReaction.userId == userId)
+            .first()
+        )
+
+        if postReactioncreate is None:
+            postReactioncreate = postReaction(
+                postId=reactRequest.postId, userId=userId, like=reactRequest.like
+            )
+            session.add(postReactioncreate)
+        else:
+            postReactioncreate.like = reactRequest.like
+
+        session.commit()
+        return True
     except Exception as e:
         print(e)
         return False
