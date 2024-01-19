@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends,Request
 from Database.context import  get_db
-from services.client.userDbServices import getUserProfile, isUserActive, loginUser, updateUserProfile
+from services.client.userDbServices import followUser, getUserProfile, isUserActive, loginUser, updateUserProfile
 from schemas.user import UpdateUserProfile, UserProfile
 from sqlalchemy.orm import Session
 from models.user import User
@@ -27,3 +27,13 @@ def update_profile(request:Request,update_detail:UpdateUserProfile,session: Sess
                return user
      else:
           raise HttpException(status_code=401, detail="You are not authenticated")
+     
+@router.post("/Follow/{username}")
+def follow(request:Request,username:str,session:Session = Depends(get_db)):
+    if request.state.IsAuthenticated:
+        if followUser(request.state.userId,username,session):
+             return {"message":f"you followed {username}."}
+        else:
+            raise HttpException(status_code=400, detail="there is no user with this username")
+    else:
+        raise HttpException(status_code=401, detail="You are not authenticated")

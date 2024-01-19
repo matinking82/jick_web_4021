@@ -8,13 +8,13 @@ class postReaction(Base):
     id = Column(Integer, primary_key=True)
     postId = Column(Integer)
     userId = Column(Integer)
-    like = Column(Boolean)
+    can_like = Column(Boolean)
     
-    def __init__(self, postId, userId, like : bool):
+    def __init__(self, postId, userId, can_like : bool):
         self.postId = postId
         self.userId = userId
-        self.like = like
+        self.can_like = can_like
         
     def __repr__(self):
         return "<postReaction(postId='%s', userId='%s', reaction='%b')>" % (
-            self.postId, self.userId, self.like)
+            self.postId, self.userId, self.can_like)

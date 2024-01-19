@@ -2,9 +2,9 @@
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from Database.context import get_db
-from services.client.postsDbServices import addPostForUser, deletePost, getPostsForUser
+from services.client.postsDbServices import addPostForUser, deletePost, getPostsForUser, reactToPost
 
-from schemas.post import CreatePostRequest, GetPostsResponseItem
+from schemas.post import CreatePostRequest, GetPostsResponseItem, ReactPostRequest
 from fastapi.exceptions import HTTPException as HttpException
 
 
@@ -31,7 +31,15 @@ def get_post(request:Request,session:Session = Depends(get_db)):
 @router.get("/delete/{post_id}")
 def delete(request:Request,post_id:int,session:Session = Depends(get_db)):
     if request.state.IsAuthenticated:
-         deletePost(post_id,request.state.userId,session)
-         return {"message": "The post deleted"}
+         if deletePost(post_id,request.state.userId,session):
+            return {"message": "The post deleted"}
     else:
           raise HttpException(status_code=401, detail="You are not authenticated")
+      
+
+@router.get("/react/{postId}")
+def reactPost(request:Request,postId:int,session:Session = Depends(get_db)):
+    if request.state.IsAuthenticated:
+       reactToPost(request.state.userId,postId,session)
+    else:
+        raise HttpException(status_code=401, detail="You are not authenticated")

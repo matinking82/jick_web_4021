@@ -164,11 +164,11 @@ def followUser(user_id: int, username: str, session: Session):
         if userToFollow is None:
             return
         
-        follow = UserFollow()
-        follow.followerId = user_id
-        follow.followingId = userToFollow.id
-        session.add(follow)
-                
+        follow = UserFollow(
+        followerId = user_id,
+        followingId = userToFollow.id
+        )
+        session.add(follow)  
         session.commit()
         return True
     

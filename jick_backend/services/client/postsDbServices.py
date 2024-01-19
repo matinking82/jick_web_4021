@@ -66,26 +66,27 @@ def deletePost(postId: int, userId: int, session: Session):
         return False
 
 
-def reactToPost(userId: int, reactRequest: ReactPostRequest, session: Session):
+def reactToPost(userId: int,postId:int, session: Session):
     try:
-        post = session.query(Post).filter(Post.id == reactRequest.postId).first()
+        post = session.query(Post).filter(Post.id == postId).first()
+        
         if post is None:
             return False
 
         postReactioncreate = (
             session.query(postReaction)
-            .filter(postReaction.postId == reactRequest.postId)
+            .filter(postReaction.postId == postId)
             .filter(postReaction.userId == userId)
             .first()
         )
 
         if postReactioncreate is None:
             postReactioncreate = postReaction(
-                postId=reactRequest.postId, userId=userId, like=reactRequest.like
+                postId=postId, userId=userId, can_like=False
             )
             session.add(postReactioncreate)
         else:
-            postReactioncreate.like = reactRequest.like
+             return False   
 
         session.commit()
         return True
