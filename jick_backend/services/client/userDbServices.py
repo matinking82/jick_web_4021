@@ -133,6 +133,16 @@ def forgotPassword(user_id: int, session: Session):
     except Exception as e:
         print(e)
 
+def forgotPasswordWithEmail(user_email: str, session: Session):
+    try:
+        foundUser = session.query(User).filter(User.email == user_email).first()
+        if foundUser is None:
+            return
+        foundUser.guid_token = guidGenerator.generateGUID()
+        session.commit()
+        return foundUser.guid_token
+    except Exception as e:
+        print(e)
 
 def changeForgottenPassword(user:forgotPasswordChange, session: Session):
     try:

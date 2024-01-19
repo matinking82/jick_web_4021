@@ -31,3 +31,5 @@ class forgotPasswordChange(BaseModel):
     guid_token: str
     new_password: str
     
+class forgotPassword(BaseModel):
+    email: str
