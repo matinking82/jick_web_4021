@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from schemas.post import CreatePostRequest, GetPostsResponseItem, ReactPostRequest
 from models.post import Post, PostImage
-from models.user import User
+from models.user import User, UserFollow
 from models.postReaction import postReaction
 
 
@@ -90,6 +90,22 @@ def reactToPost(userId: int,postId:int, session: Session):
 
         session.commit()
         return True
+    except Exception as e:
+        print(e)
+        return False
+
+def getAllPost(userId:int,session:Session):
+    try:
+        all_post=list()
+        users = session.query(UserFollow).filter(UserFollow.followerId == userId).all()
+        if users is None:
+            return
+        for user in users:
+            posts = session.query(Post).filter(Post.id_sender == user.followingId).all()
+            all_post.append(posts)
+        
+        return all_post
+        
     except Exception as e:
         print(e)
         return False

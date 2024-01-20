@@ -43,3 +43,10 @@ def reactPost(request:Request,postId:int,session:Session = Depends(get_db)):
        reactToPost(request.state.userId,postId,session)
     else:
         raise HttpException(status_code=401, detail="You are not authenticated")
+
+@router.get("/all/")
+def getAllPost(request:Request,session:Session = Depends(get_db)):
+    if request.state.IsAuthenticated:
+       getAllPost(request.state.userId,session)
+    else:
+        raise HttpException(status_code=401, detail="You are not authenticated")
