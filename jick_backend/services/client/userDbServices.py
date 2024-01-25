@@ -22,6 +22,8 @@ def registerUser(user: UserRegister, session: Session):
             password=passwordHasher.hashPass(current_user.password),
             guid_token=guidGenerator.generateGUID(),
         )
+        newUser.is_active = True
+        
         session.add(newUser)
         session.commit()
         return newUser

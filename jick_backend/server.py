@@ -14,7 +14,13 @@ from middlewares.authorization import checkTokenMiddleWare
 
 app = FastAPI()
 
-app.middleware(CORSMiddleware)
+app.add_middleware(
+	CORSMiddleware,
+	allow_origins=["*"],
+	allow_credentials=True,
+	allow_methods=["*"],
+	allow_headers=["*"]
+)
 app.middleware("http")(checkTokenMiddleWare)
 
 
