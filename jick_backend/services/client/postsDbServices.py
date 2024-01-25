@@ -1,5 +1,10 @@
 from sqlalchemy.orm import Session
-from schemas.post import CreatePostRequest, GetPostsResponseItem, ReactPostRequest,PostResponse
+from schemas.post import (
+    CreatePostRequest,
+    GetPostsResponseItem,
+    ReactPostRequest,
+    PostResponse,
+)
 from models.post import Post, PostImage
 from models.user import User, UserFollow
 from models.postReaction import postReaction
@@ -13,11 +18,9 @@ def addPostForUser(post: CreatePostRequest, session: Session):
         )
         session.add(newPost)
         session.commit()
-        
-        
 
-        sender:User = session.query(User).filter(User.id == newPost.id_sender).first()
-        
+        sender: User = session.query(User).filter(User.id == newPost.id_sender).first()
+
         resPost = PostResponse(
             id=newPost.id,
             text=newPost.text,
@@ -25,7 +28,7 @@ def addPostForUser(post: CreatePostRequest, session: Session):
             create_date=str(newPost.create_date),
             senderEmail=sender.email,
         )
-             
+
         return resPost
     except Exception as e:
         print(e)
@@ -79,10 +82,10 @@ def deletePost(postId: int, userId: int, session: Session):
         return False
 
 
-def reactToPost(userId: int,postId:int, session: Session):
+def reactToPost(userId: int, postId: int, session: Session):
     try:
         post = session.query(Post).filter(Post.id == postId).first()
-        
+
         if post is None:
             return False
 
@@ -95,11 +98,11 @@ def reactToPost(userId: int,postId:int, session: Session):
 
         if postReactioncreate is None:
             postReactioncreate = postReaction(
-                postId=postId, userId=userId, can_like=False
+                postId=postId, userId=userId, can_like=True
             )
             session.add(postReactioncreate)
         else:
-             return False   
+            return False
 
         session.commit()
         return True
@@ -107,27 +110,48 @@ def reactToPost(userId: int,postId:int, session: Session):
         print(e)
         return False
 
-def getAllPost(userId:int,session:Session):
+
+def getAllPost(userId: int, session: Session):
     try:
-        all_post:list[Post]=list()
+        all_post: list[Post] = list()
         users = session.query(UserFollow).filter(UserFollow.followerId == userId).all()
         if users is None:
             return
         for user in users:
             posts = session.query(Post).filter(Post.id_sender == user.followingId).all()
             all_post.append(posts)
-        
-        #flatten list
+
+        # flatten list
         all_post = [y for x in all_post for y in x]
-        
-        #remove duplicate
+
+        # remove duplicate
         all_post = list(dict.fromkeys(all_post))
-        
-        #sort by date newest to oldest
+
+        # sort by date newest to oldest
         all_post.sort(key=lambda x: x.create_date, reverse=True)
-        
-        return all_post
-        
+
+        resAll: list[PostResponse] = list()
+
+        for post in all_post:
+            sender: User = session.query(User).filter(User.id == post.id_sender).first()
+            likes = (
+                session.query(postReaction)
+                .filter(postReaction.postId == post.id)
+                .filter(postReaction.can_like == True)
+                .all()
+            )
+            resPost = PostResponse(
+                id=post.id,
+                text=post.text,
+                senderId=post.id_sender,
+                create_date=str(post.create_date),
+                senderEmail=sender.email,
+                likes=len(likes),
+            )
+            resAll.append(resPost)
+
+        return resAll
+
     except Exception as e:
         print(e)
         return False

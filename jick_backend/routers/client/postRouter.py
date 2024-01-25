@@ -48,7 +48,10 @@ def delete(request: Request, post_id: int, session: Session = Depends(get_db)):
 @router.get("/react/{postId}")
 def reactPost(request: Request, postId: int, session: Session = Depends(get_db)):
     if request.state.IsAuthenticated:
-        reactToPost(request.state.userId, postId, session)
+        res = reactToPost(request.state.userId, postId, session)
+        if res is None:
+            raise HttpException(status_code=400, detail="You already reacted to this post")
+        return res
     else:
         raise HttpException(status_code=401, detail="You are not authenticated")
 

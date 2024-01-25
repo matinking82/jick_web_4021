@@ -11,6 +11,7 @@ class PostResponse(BaseModel):
     senderId: int
     create_date: str 
     senderEmail: str
+    likes: int
     
 
 class GetPostsResponseItem(BaseModel):
