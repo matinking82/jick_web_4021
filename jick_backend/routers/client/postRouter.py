@@ -11,15 +11,18 @@ from services.client.postsDbServices import (
 
 from schemas.post import CreatePostRequest, GetPostsResponseItem, ReactPostRequest
 from fastapi.exceptions import HTTPException as HttpException
-
+from schemas.post import PostResponse
 
 router = APIRouter()
 
 
-@router.post("/create/", response_model=CreatePostRequest)
-def create_post(request: Request, text: str, session: Session = Depends(get_db)):
+@router.post("/create/", response_model=PostResponse | None)
+def create_post(
+    request: Request, create: CreatePostRequest, session: Session = Depends(get_db)
+):
+    print(create)
     if request.state.IsAuthenticated:
-        post = CreatePostRequest(text=text, senderId=request.state.userId)
+        post = CreatePostRequest(text=create.text, senderId=request.state.userId)
         return addPostForUser(post, session)
     else:
         raise HttpException(status_code=401, detail="You are not authenticated")

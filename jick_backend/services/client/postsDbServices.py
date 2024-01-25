@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from schemas.post import CreatePostRequest, GetPostsResponseItem, ReactPostRequest
+from schemas.post import CreatePostRequest, GetPostsResponseItem, ReactPostRequest,PostResponse
 from models.post import Post, PostImage
 from models.user import User, UserFollow
 from models.postReaction import postReaction
@@ -13,7 +13,20 @@ def addPostForUser(post: CreatePostRequest, session: Session):
         )
         session.add(newPost)
         session.commit()
-        return newPost
+        
+        
+
+        sender:User = session.query(User).filter(User.id == newPost.id_sender).first()
+        
+        resPost = PostResponse(
+            id=newPost.id,
+            text=newPost.text,
+            senderId=newPost.id_sender,
+            create_date=str(newPost.create_date),
+            senderEmail=sender.email,
+        )
+             
+        return resPost
     except Exception as e:
         print(e)
 
