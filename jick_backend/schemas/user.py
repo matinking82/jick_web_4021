@@ -33,3 +33,11 @@ class forgotPasswordChange(BaseModel):
     
 class forgotPassword(BaseModel):
     email: str
+    
+    
+class searchUserResponse(BaseModel):
+    username: str
+    full_name: str | None
+    email: str
+    create_date: str
+    isFollowing: bool

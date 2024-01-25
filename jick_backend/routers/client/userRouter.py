@@ -6,6 +6,8 @@ from services.client.userDbServices import (
     isUserActive,
     loginUser,
     updateUserProfile,
+    unfollowUser,
+    searchUserServicce,
 )
 from schemas.user import UserProfile, UpdateUserProfileModel
 from sqlalchemy.orm import Session
@@ -51,5 +53,32 @@ def follow(request: Request, username: str, session: Session = Depends(get_db)):
             raise HttpException(
                 status_code=400, detail="there is no user with this username"
             )
+    else:
+        raise HttpException(status_code=401, detail="You are not authenticated")
+
+
+@router.post("/unFollow/{username}")
+def unFollow(request: Request, username: str, session: Session = Depends(get_db)):
+    print(username)
+    if request.state.IsAuthenticated:
+        res = unfollowUser(request.state.userId, username, session)
+        if res is None or not res:
+            raise HttpException(
+                status_code=400, detail="you are not following this user"
+            )
+        return {"message": f"you unfollowed {username}."}
+    else:
+        raise HttpException(status_code=401, detail="You are not authenticated")
+
+
+@router.post("/search/{search_key}")
+def searchUser(request: Request, search_key: str, session: Session = Depends(get_db)):
+    if request.state.IsAuthenticated:
+        res = searchUserServicce(request.state.userId, search_key, session)
+        if res is None:
+            raise HttpException(
+                status_code=400, detail="something went wrong, try again later"
+            )
+        return res
     else:
         raise HttpException(status_code=401, detail="You are not authenticated")

@@ -27,6 +27,7 @@ def addPostForUser(post: CreatePostRequest, session: Session):
             senderId=newPost.id_sender,
             create_date=str(newPost.create_date),
             senderEmail=sender.email,
+            likes=0,
         )
 
         return resPost
@@ -40,26 +41,26 @@ def getPostsForUser(userId: int, session: Session):
         if posts is None:
             return []
 
-        result: list[GetPostsResponseItem] = []
-
+        result: list[PostResponse] = []
+        
         for post in posts:
-            item = GetPostsResponseItem(
+            sender: User = session.query(User).filter(User.id == post.id_sender).first()
+            likes = (
+                session.query(postReaction)
+                .filter(postReaction.postId == post.id)
+                .filter(postReaction.can_like == True)
+                .all()
+            )
+            resPost = PostResponse(
                 id=post.id,
                 text=post.text,
                 senderId=post.id_sender,
-                create_date=post.create_date,
-                images=[],
-                senderUsername=None,
+                create_date=str(post.create_date),
+                senderEmail=sender.email,
+                likes=len(likes),
             )
-
-            sender = session.query(User).filter(User.id == post.id_sender).first()
-            images = session.query(PostImage).filter(PostImage.postId == post.id).all()
-
-            item.images = [image.imageAdress for image in images]
-            item.senderUsername = sender.username
-
-            result.append(item)
-
+            result.append(resPost)        
+        
         return result
     except Exception as e:
         print(e)

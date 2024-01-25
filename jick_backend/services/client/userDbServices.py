@@ -184,3 +184,52 @@ def followUser(user_id: int, username: str, session: Session):
     except Exception as e:
         print(e)
         return False
+    
+def unfollowUser(user_id: int, username: str, session: Session):
+    try:
+        foundUser = session.query(User).filter(User.id == user_id).first()
+        if foundUser is None:
+            return
+        userToFollow = session.query(User).filter(User.username == username).first()
+        if userToFollow is None:
+            return
+        
+        #check if followed before
+        
+        follow = session.query(UserFollow).filter(UserFollow.followerId == user_id).filter(UserFollow.followingId == userToFollow.id).first()
+        
+        if follow is None:
+            return
+        
+        session.delete(follow)  
+        session.commit()
+        return True
+    
+    except Exception as e:
+        print(e)
+        return False
+    
+    
+def searchUserServicce(searcherId: int, search_key: str, session: Session):
+    try:
+        users = session.query(User).filter(User.username.ilike(f"%{search_key}%")).all()
+        resUsers:list[searchUserResponse] = list()
+        
+        for user in users:
+            isFollowing = session.query(UserFollow).filter(UserFollow.followerId == searcherId).filter(UserFollow.followingId == user.id).first()
+            if isFollowing is None:
+                isFollowing = False
+            else:
+                isFollowing = True
+            resUsers.append(searchUserResponse(
+                username = user.username,
+                full_name = user.full_name,
+                email = user.email,
+                create_date = str(user.create_date),
+                isFollowing = isFollowing
+            ))
+            
+        return resUsers
+    except Exception as e:
+        print(e)
+        return []
