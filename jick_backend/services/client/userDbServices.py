@@ -86,7 +86,7 @@ def getUserProfile(user_id:int, session: Session):
     except Exception as e:
         print(e)
 
-def updateUserProfile(user_id: int, user: UpdateUserProfile, session: Session):
+def updateUserProfile(user_id: int, user: UpdateUserProfileModel, session: Session):
     try:
         foundUser = session.query(User).filter(User.id == user_id).first()
         if foundUser is None:

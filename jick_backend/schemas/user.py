@@ -18,10 +18,10 @@ class UserProfile(BaseModel):
     age: int | None
     create_date: str | None
 
-class UpdateUserProfile(BaseModel):
-    username: str
-    full_name: str
-    age: int
+class UpdateUserProfileModel(BaseModel):
+    username: str | None
+    full_name: str | None
+    age: int | None
     
 class ChangePassword(BaseModel):
     old_password: str

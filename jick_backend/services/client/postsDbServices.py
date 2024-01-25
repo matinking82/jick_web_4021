@@ -96,13 +96,16 @@ def reactToPost(userId: int,postId:int, session: Session):
 
 def getAllPost(userId:int,session:Session):
     try:
-        all_post=list()
+        all_post:list[Post]=list()
         users = session.query(UserFollow).filter(UserFollow.followerId == userId).all()
         if users is None:
             return
         for user in users:
             posts = session.query(Post).filter(Post.id_sender == user.followingId).all()
             all_post.append(posts)
+        
+        #sort by date newest to oldest
+        all_post.sort(key=lambda x: x.create_date, reverse=True)
         
         return all_post
         

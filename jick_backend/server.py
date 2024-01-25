@@ -7,7 +7,7 @@ import uvicorn
 load_dotenv()
 
 from routers.client import authenticationRouter
-from routers.client import userRouter
+from routers.client import userRouter, postRouter
 from Database.context import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 from middlewares.authorization import checkTokenMiddleWare
@@ -15,14 +15,13 @@ from middlewares.authorization import checkTokenMiddleWare
 app = FastAPI()
 
 app.add_middleware(
-	CORSMiddleware,
-	allow_origins=["*"],
-	allow_credentials=True,
-	allow_methods=["*"],
-	allow_headers=["*"]
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 app.middleware("http")(checkTokenMiddleWare)
-
 
 app.include_router(
     router=authenticationRouter.router,
@@ -31,11 +30,9 @@ app.include_router(
     responses={404: {"description": "Not found"}},
 )
 
-app.include_router(
-    router = userRouter.router,
-    prefix="/user",
-    tags=["profile"]
-    )
+app.include_router(router=userRouter.router, prefix="/user", tags=["profile"])
+
+app.include_router(router=postRouter.router, prefix="/post", tags=["post"])
 
 
 @app.get("/")

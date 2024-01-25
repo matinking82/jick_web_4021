@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends,Request
 from Database.context import  get_db
-from services.client.userDbServices import followUser, getUserProfile, isUserActive, loginUser, updateUserProfile
-from schemas.user import UpdateUserProfile, UserProfile
+from services.client.userDbServices import followUser, getUserProfile, isUserActive, loginUser,updateUserProfile
+from schemas.user import  UserProfile,UpdateUserProfileModel
 from sqlalchemy.orm import Session
 from models.user import User
 from fastapi.exceptions import HTTPException as HttpException
@@ -20,7 +20,8 @@ def get_profile(request:Request,session: Session = Depends(get_db)):
           raise HttpException(status_code=401, detail="You are not authenticated")
 
 @router.post("/update/",response_model=UserProfile)
-def update_profile(request:Request,update_detail:UpdateUserProfile,session: Session = Depends(get_db)):
+def update_profile(request:Request,update_detail:UpdateUserProfileModel,session: Session = Depends(get_db)):
+     print(update_detail)
      if request.state.IsAuthenticated:
           if isUserActive(request.state.userId,session):
                user= updateUserProfile(request.state.userId,update_detail,session)
