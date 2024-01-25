@@ -44,8 +44,11 @@ export const SendPost = async (text: string) => {
   let token = localStorage.getItem("token");
   let data = {
     text: text,
+    senderId: 0,
   };
 
+  console.log(data);
+  
   let response = await fetch(url, {
     method: "POST",
     headers: {

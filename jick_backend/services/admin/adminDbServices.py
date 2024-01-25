@@ -31,15 +31,13 @@ def login(username: str, password: str, session: Session):
 
 def getAllStats(session: Session):
     try:
-        stats = statistics()
-
-        stats.total_registers = session.query(User).count()
-        stats.total_posts = session.query(Post).count()
-        stats.total_likes = session.query(postReaction).count()
-        stats.total_follows = session.query(UserFollow).count()
+        total_registers = session.query(User).count()
+        total_posts = session.query(Post).count()
+        total_likes = session.query(postReaction).count()
+        total_follows = session.query(UserFollow).count()
 
         # stats for last month
-        stats.new_posts = (
+        new_posts = (
             session.query(Post)
             .filter(
                 Post.create_date
@@ -47,7 +45,7 @@ def getAllStats(session: Session):
             )
             .count()
         )
-        stats.new_follows = (
+        new_follows = (
             session.query(UserFollow)
             .filter(
                 UserFollow.create_date
@@ -55,7 +53,7 @@ def getAllStats(session: Session):
             )
             .count()
         )
-        stats.new_registers = (
+        new_registers = (
             session.query(User)
             .filter(
                 User.create_date
@@ -63,6 +61,17 @@ def getAllStats(session: Session):
             )
             .count()
         )
+        
+        stats = statistics(
+            total_likes=total_likes,
+            total_follows=total_follows,
+            total_posts=total_posts,
+            total_registers=total_registers,
+            new_follows=new_follows,
+            new_posts=new_posts,
+            new_registers=new_registers,
+        )
+        
         return stats
     except Exception as e:
         print(e)

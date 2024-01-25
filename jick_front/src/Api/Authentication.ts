@@ -2,6 +2,8 @@ import { API_URL } from "./Vars";
 
 export const login = async (email: string, password: string) => {
   let url = API_URL + "/user/login";
+  console.log(url);
+  
   let data = {
     email: email,
     password: password,
