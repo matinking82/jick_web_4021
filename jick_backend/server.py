@@ -8,7 +8,7 @@ load_dotenv()
 
 from routers.client import authenticationRouter
 from routers.client import userRouter, postRouter
-from routers.admin import AdminAuth,StatsRouter
+from routers.admin import AdminAuth, StatsRouter, usersManager, postsManager
 from Database.context import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 from middlewares.authorization import checkTokenMiddleWare, checkAdminMiddleWare
@@ -39,6 +39,11 @@ app.include_router(router=postRouter.router, prefix="/post", tags=["post"])
 app.include_router(router=AdminAuth.router, prefix="/admin", tags=["admin"])
 
 app.include_router(router=StatsRouter.router, prefix="/admin/stats", tags=["stats"])
+
+app.include_router(router=usersManager.router, prefix="/admin/user", tags=["users"])
+
+app.include_router(router=postsManager.router, prefix="/admin/post", tags=["posts"])
+
 
 @app.get("/")
 async def root(request: Request):

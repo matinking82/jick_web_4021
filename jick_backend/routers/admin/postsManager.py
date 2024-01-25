@@ -2,11 +2,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.exceptions import HTTPException as HttpException
 from sqlalchemy.orm import Session
 from Database.context import get_db
-from services.admin.usersDbServices import (
-    getAllUsersService,
-    ActivateUserService,
-    DeActivateUserService,
-)
+from services.admin.postsDbServices import getAllPostsService,deletePost
 
 router = APIRouter()
 
@@ -16,30 +12,18 @@ def getAllUsers(request: Request, page: int, session: Session = Depends(get_db))
     if not request.state.IsAdmin:
         raise HttpException(status_code=401, detail="You are not admin")
 
-    res = getAllUsersService(page, session)
+    res = getAllPostsService(page, session)
     if res is None:
         raise HttpException(status_code=400, detail="something went wrong")
     return res
 
 
-@router.get("/Activate/{userId}")
-def ActivateUser(request: Request, userId: int, session: Session = Depends(get_db)):
+@router.post("/delete/{postId}")
+def deletePostAction(request: Request, postId: int, session: Session = Depends(get_db)):
     if not request.state.IsAdmin:
         raise HttpException(status_code=401, detail="You are not admin")
 
-    res = ActivateUserService(userId, session)
-    if res is None:
-        raise HttpException(status_code=400, detail="something went wrong")
-    return res
-
-
-@router.get("/DeActivate/{userId}")
-def DeActivateUser(request: Request, userId: int, session: Session = Depends(get_db)):
-    if not request.state.IsAdmin:
-        raise HttpException(status_code=401, detail="You are not admin")
-
-    res = DeActivateUserService(userId, session)
-    print(res)
+    res = deletePost(postId, session)
     if res is None:
         raise HttpException(status_code=400, detail="something went wrong")
     return res

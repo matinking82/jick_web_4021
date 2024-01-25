@@ -40,13 +40,13 @@ const AdminNavBar = () => {
               </Link>
             </li> */}
             <li className="nav-item">
-              <Link className="nav-link" to={"/admin/posts"}>
+              <Link className="nav-link" to={"/admin/posts/0"}>
                 posts
               </Link>
             </li>
-            
+
             <li className="nav-item">
-              <Link className="nav-link" to={"/admin/users"}>
+              <Link className="nav-link" to={"/admin/users/0"}>
                 users
               </Link>
             </li>

@@ -61,11 +61,11 @@ const AfterLogin = () => {
       element: <AdminLogout />,
     },
     {
-      path: "/admin/posts",
+      path: "/admin/posts/:page",
       element: <AdminPosts />,
     },
     {
-      path: "/admin/users",
+      path: "/admin/users/:page",
       element: <AdminUsers />,
     },
   ]);
