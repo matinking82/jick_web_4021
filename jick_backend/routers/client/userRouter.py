@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Request
+from pydantic import BaseModel
 from Database.context import get_db
 from services.client.userDbServices import (
     followUser,
@@ -9,8 +10,10 @@ from services.client.userDbServices import (
     unfollowUser,
     searchUserServicce,
     getUserProfileByUsername,
+    followUserByEmail,
+    unfollowUserByEmail,
 )
-from schemas.user import UserProfile, UpdateUserProfileModel, OtherUserProfile
+from schemas.user import UserProfile, UpdateUserProfileModel, OtherUserProfile,EmailRequest
 from sqlalchemy.orm import Session
 from models.user import User
 from fastapi.exceptions import HTTPException as HttpException
@@ -33,7 +36,10 @@ def get_profile(request: Request, session: Session = Depends(get_db)):
 def get_profile_by_username(
     request: Request, email: str, session: Session = Depends(get_db)
 ):
-    res = getUserProfileByUsername(email, session)
+    if not request.state.IsAuthenticated:
+        raise HttpException(status_code=401, detail="You are not authenticated")
+
+    res = getUserProfileByUsername(request.state.userId, email, session)
     if res is None:
         raise HttpException(
             status_code=400, detail="there is no user with this username"
@@ -80,6 +86,36 @@ def unFollow(request: Request, username: str, session: Session = Depends(get_db)
                 status_code=400, detail="you are not following this user"
             )
         return {"message": f"you unfollowed {username}."}
+    else:
+        raise HttpException(status_code=401, detail="You are not authenticated")
+
+
+
+
+@router.post("/eFollow/")
+def eFollow(request: Request, email: EmailRequest, session: Session = Depends(get_db)):
+    if request.state.IsAuthenticated:
+        if followUserByEmail(request.state.userId, email.email, session):
+            return {"message": f"you followed {email.email}."}
+        else:
+            raise HttpException(
+                status_code=400, detail="there is no user with this email"
+            )
+    else:
+        raise HttpException(status_code=401, detail="You are not authenticated")
+
+
+@router.post("/eUnFollow/")
+def eUnFollow(
+    request: Request, email: EmailRequest, session: Session = Depends(get_db)
+):
+    if request.state.IsAuthenticated:
+        res = unfollowUserByEmail(request.state.userId, email.email, session)
+        if res is None or not res:
+            raise HttpException(
+                status_code=400, detail="you are not following this user"
+            )
+        return {"message": f"you unfollowed {email.email}."}
     else:
         raise HttpException(status_code=401, detail="You are not authenticated")
 

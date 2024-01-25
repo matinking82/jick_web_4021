@@ -1,13 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { profile } from "../interfaces/user";
+import { getUserProfile } from "../Api/User";
 
 const NavBar = () => {
   const [search, setSearch]: [string, any] = useState("");
+  const [profile, setProfile]: [profile, any] = useState(null);
+  useEffect(() => {
+    getUserProfile().then((res) => {
+      setProfile(res);
+      console.log(res);
+    });
+  }, []);
+
+  let prof = <>profile</>;
+
+  if (profile) {
+    prof = <>profile: {profile.email}</>;
+  }
 
   return (
     <nav className="main-nav navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
-        <Link className="navbar-brand" to={'/'}>
+        <Link className="navbar-brand" to={"/"}>
           Jick Web
         </Link>
         <button
@@ -29,21 +44,21 @@ const NavBar = () => {
                 aria-current="page"
                 to={"/profile"}
               >
-                Profile
+                {prof}
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to={'/post'}>
+              <Link className="nav-link" to={"/post"}>
                 Create Post
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to={'/explore'}>
+              <Link className="nav-link" to={"/explore"}>
                 Explore
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to={'/logout'}>
+              <Link className="nav-link" to={"/logout"}>
                 Log out
               </Link>
             </li>

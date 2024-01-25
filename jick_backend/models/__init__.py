@@ -1,1 +1,1 @@
-__all__ = ['user','post','postReaction']
+__all__ = ['user','post','postReaction','admin']

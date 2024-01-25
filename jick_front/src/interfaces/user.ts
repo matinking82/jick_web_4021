@@ -20,4 +20,5 @@ export interface UserProfile{
   email: string;
   full_name: string;
   create_date: string;
+  isFollowing: boolean;
 }

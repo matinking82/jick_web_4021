@@ -5,7 +5,13 @@ import PostCard from "../components/PostCard";
 import { GetPostsForUser } from "../Api/Posts";
 import NavBar from "../components/NavBar";
 import { UserProfile } from "../interfaces/user";
-import { getUserProfileByUsername } from "../Api/User";
+import {
+  followUser,
+  followUserByEmail,
+  getUserProfileByUsername,
+  unfollowUser,
+  unfollowUserByEmail,
+} from "../Api/User";
 
 const UserPosts = () => {
   const { email } = useParams<{ email: string }>();
@@ -31,12 +37,45 @@ const UserPosts = () => {
   }
 
   if (profile) {
+    let follow = (
+      <button
+        className="btn btn-outline-primary"
+        onClick={() => {
+          followUserByEmail(profile.email).then((res) => {
+            if (res) {
+              window.location.reload();
+            }
+          });
+        }}
+      >
+        Follow
+      </button>
+    );
+    if (profile.isFollowing) {
+      follow = (
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            unfollowUserByEmail(profile.email).then((res) => {
+              if (res) {
+                window.location.reload();
+              }
+            });
+          }}
+        >
+          Unfollow
+        </button>
+      );
+    }
+
     profileElement = (
       <div className="user-profile-card">
         <h4>username: {profile.username}</h4>
         <p>email: {profile.email}</p>
         <p>full name: {profile.full_name}</p>
         <span>joined at: {profile.create_date}</span>
+        <br />
+        {follow}
       </div>
     );
   }

@@ -97,6 +97,58 @@ export const unfollowUser = async (username: string) => {
   }
 };
 
+export const followUserByEmail = async (email: string) => {
+  let url = API_URL + "/user/eFollow/";
+
+  let token = localStorage.getItem("token");
+
+  let data = {
+    email: email,
+  };
+  let jsondata = JSON.stringify(data);
+  console.log(jsondata);
+  
+  let response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    body: jsondata,
+  });
+
+  if (response.ok) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const unfollowUserByEmail = async (email: string) => {
+  let url = API_URL + "/user/eUnFollow/";
+
+  let data = {
+    email: email,
+  };
+
+  let token = localStorage.getItem("token");
+
+  let response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (response.ok) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export const getUserProfileByUsername = async (email: string) => {
   let url = API_URL + "/user/get/" + email;
   let token = localStorage.getItem("token");

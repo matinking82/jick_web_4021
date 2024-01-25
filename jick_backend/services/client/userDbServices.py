@@ -88,16 +88,29 @@ def getUserProfile(user_id: int, session: Session):
         print(e)
 
 
-def getUserProfileByUsername(email: str, session: Session):
+def getUserProfileByUsername(userId: int, email: str, session: Session):
     try:
         foundUser = session.query(User).filter(User.email == email).first()
         if foundUser is None:
             return
+
+        isfollowing = (
+            session.query(UserFollow)
+            .filter(UserFollow.followerId == userId)
+            .filter(UserFollow.followingId == foundUser.id)
+            .first()
+        )
+        if isfollowing is None:
+            isfollowing = False
+        else:
+            isfollowing = True
+
         result = OtherUserProfile(
             username=foundUser.username,
             email=foundUser.email,
             full_name=foundUser.full_name,
             create_date=str(foundUser.create_date),
+            isFollowing=isfollowing,
         )
         return result
     except Exception as e:
@@ -188,6 +201,8 @@ def followUser(user_id: int, username: str, session: Session):
         if userToFollow is None:
             return
 
+        if userToFollow.id == user_id:
+            return
         # check if followed before
 
         follow = (
@@ -218,6 +233,72 @@ def unfollowUser(user_id: int, username: str, session: Session):
         userToFollow = session.query(User).filter(User.username == username).first()
         if userToFollow is None:
             return
+
+        # check if followed before
+
+        follow = (
+            session.query(UserFollow)
+            .filter(UserFollow.followerId == user_id)
+            .filter(UserFollow.followingId == userToFollow.id)
+            .first()
+        )
+
+        if follow is None:
+            return
+
+        session.delete(follow)
+        session.commit()
+        return True
+
+    except Exception as e:
+        print(e)
+        return False
+
+
+def followUserByEmail(user_id: int, email: str, session: Session):
+    try:
+        foundUser = session.query(User).filter(User.id == user_id).first()
+        if foundUser is None:
+            return
+        userToFollow = session.query(User).filter(User.email == email).first()
+        if userToFollow is None:
+            return
+
+        if userToFollow.id == user_id:
+            return
+        # check if followed before
+
+        follow = (
+            session.query(UserFollow)
+            .filter(UserFollow.followerId == user_id)
+            .filter(UserFollow.followingId == userToFollow.id)
+            .first()
+        )
+
+        if follow is not None:
+            return
+
+        follow = UserFollow(followerId=user_id, followingId=userToFollow.id)
+        session.add(follow)
+        session.commit()
+        return True
+
+    except Exception as e:
+        print(e)
+        return False
+
+
+def unfollowUserByEmail(user_id: int, email: str, session: Session):
+    try:
+        foundUser = session.query(User).filter(User.id == user_id).first()
+        if foundUser is None:
+            return
+        userToFollow = session.query(User).filter(User.email == email).first()
+        if userToFollow is None:
+            return
+        
+        print(userToFollow.id)
+        print(user_id)
 
         # check if followed before
 

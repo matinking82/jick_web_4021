@@ -5,9 +5,13 @@ import Home from "./Home";
 import Profile from "./Profile";
 import Search from "./Search";
 import CreatePost from "./CreatePost";
-import MyPosts from "../components/MyPosts";
 import UserPosts from "./UserPosts";
 import Explore from "./Explore";
+import AdminHome from "./admin/Adminhome";
+import AdminLogin from "./admin/AdminLogin";
+import AdminLogout from "./admin/AdminLogout";
+import AdminPosts from "./admin/AdminPosts";
+import AdminUsers from "./admin/AdminUsers";
 
 const AfterLogin = () => {
   let router = createBrowserRouter([
@@ -43,6 +47,26 @@ const AfterLogin = () => {
     {
       path: "/explore",
       element: <Explore />,
+    },
+    {
+      path: "/admin",
+      element: <AdminHome />,
+    },
+    {
+      path: "/admin/login",
+      element: <AdminLogin />,
+    },
+    {
+      path: "/admin/logout",
+      element: <AdminLogout />,
+    },
+    {
+      path: "/admin/posts",
+      element: <AdminPosts />,
+    },
+    {
+      path: "/admin/users",
+      element: <AdminUsers />,
     },
   ]);
 

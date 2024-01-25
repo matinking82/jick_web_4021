@@ -10,6 +10,9 @@ class UserLogin(BaseModel):
     email: str
     password: str
 
+class EmailRequest(BaseModel):
+    email: str
+
 
 class UserProfile(BaseModel):
     username: str | None
@@ -23,6 +26,7 @@ class OtherUserProfile(BaseModel):
     email: str | None
     full_name: str | None
     create_date: str | None
+    isFollowing: bool | None
 
 class UpdateUserProfileModel(BaseModel):
     username: str | None
@@ -47,3 +51,7 @@ class searchUserResponse(BaseModel):
     email: str
     create_date: str
     isFollowing: bool
+    
+class adminLoginRequest(BaseModel):
+    username: str
+    password: str

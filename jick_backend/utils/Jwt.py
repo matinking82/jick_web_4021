@@ -10,6 +10,19 @@ class JwtPayload:
     def __init__(self, id: int, email: str):
         self.id = id
         self.email = email
+
+    def __init__(self):
+        pass
+
+
+class AdminJwtPayload:
+    id: int
+    username: str
+
+    def __init__(self, id: int, username: str):
+        self.id = id
+        self.username = username
+
     def __init__(self):
         pass
 
@@ -23,6 +36,17 @@ def createJWT(payload: JwtPayload):
     return encoded_jwt
 
 
+def createAdminJWT(payload: AdminJwtPayload):
+    ALGORITHM = "HS256"
+    SECRET_KEY = os.environ["JWT_SECRET"]
+    expday = 30
+    payload.exp = datetime.datetime.utcnow() + datetime.timedelta(days=expday)
+    encoded_jwt = jwt.encode(
+        payload.__dict__, SECRET_KEY + SECRET_KEY, algorithm=ALGORITHM
+    )
+    return encoded_jwt
+
+
 def verifyJwt(token: str):
     ALGORITHM = "HS256"
     SECRET_KEY = os.environ["JWT_SECRET"]
@@ -32,6 +56,27 @@ def verifyJwt(token: str):
         result = JwtPayload()
         result.id = payload["id"]
         result.email = payload["email"]
+
+        if (
+            datetime.datetime.utcfromtimestamp(payload["exp"])
+            < datetime.datetime.utcnow()
+        ):
+            raise JWTError
+
+        return result
+    except JWTError:
+        return None
+
+
+def verifyAdminJwt(token: str):
+    ALGORITHM = "HS256"
+    SECRET_KEY = os.environ["JWT_SECRET"]
+    try:
+        payload = jwt.decode(token, SECRET_KEY + SECRET_KEY, algorithms=[ALGORITHM])
+
+        result = AdminJwtPayload()
+        result.id = payload["id"]
+        result.username = payload["username"]
 
         if (
             datetime.datetime.utcfromtimestamp(payload["exp"])
