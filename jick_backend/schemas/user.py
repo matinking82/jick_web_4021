@@ -17,6 +17,12 @@ class UserProfile(BaseModel):
     full_name: str | None
     age: int | None
     create_date: str | None
+    
+class OtherUserProfile(BaseModel):
+    username: str | None
+    email: str | None
+    full_name: str | None
+    create_date: str | None
 
 class UpdateUserProfileModel(BaseModel):
     username: str | None

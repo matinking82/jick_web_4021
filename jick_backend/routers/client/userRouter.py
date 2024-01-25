@@ -8,8 +8,9 @@ from services.client.userDbServices import (
     updateUserProfile,
     unfollowUser,
     searchUserServicce,
+    getUserProfileByUsername,
 )
-from schemas.user import UserProfile, UpdateUserProfileModel
+from schemas.user import UserProfile, UpdateUserProfileModel, OtherUserProfile
 from sqlalchemy.orm import Session
 from models.user import User
 from fastapi.exceptions import HTTPException as HttpException
@@ -26,6 +27,18 @@ def get_profile(request: Request, session: Session = Depends(get_db)):
             return foundUser
     else:
         raise HttpException(status_code=401, detail="You are not authenticated")
+
+
+@router.get("/get/{email}", response_model=OtherUserProfile)
+def get_profile_by_username(
+    request: Request, email: str, session: Session = Depends(get_db)
+):
+    res = getUserProfileByUsername(email, session)
+    if res is None:
+        raise HttpException(
+            status_code=400, detail="there is no user with this username"
+        )
+    return res
 
 
 @router.post("/update/", response_model=UserProfile)

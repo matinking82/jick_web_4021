@@ -1,6 +1,8 @@
 import SignIn from "./pages/Signin";
 import "./App.css";
 import AfterLogin from "./pages/AfterLogin";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function App() {
   let isAuthenticated = false;
@@ -11,12 +13,12 @@ function App() {
 
   if (isAuthenticated) {
     return (
-      <AfterLogin />
+      <>
+        <AfterLogin />
+      </>
     );
   } else {
-    return (
-      <SignIn />
-    );
+    return <SignIn />;
   }
 }
 

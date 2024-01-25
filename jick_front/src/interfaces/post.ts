@@ -1,6 +1,8 @@
 export interface Post {
     id: number;
-    id_sender: number;
     text: string;
-    create_date: string;
+    senderId: number;
+    create_date: string; 
+    senderEmail: string;
+    likes: number;
 }

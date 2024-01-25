@@ -7,6 +7,8 @@ from services.client.postsDbServices import (
     getPostsForUser,
     reactToPost,
     getAllPost,
+    getPostsForUsername,
+    getRecentPosts
 )
 
 from schemas.post import CreatePostRequest, GetPostsResponseItem, ReactPostRequest
@@ -28,10 +30,13 @@ def create_post(
         raise HttpException(status_code=401, detail="You are not authenticated")
 
 
-@router.get("/get/", response_model=GetPostsResponseItem)
+@router.get("/get/", response_model=list[PostResponse])
 def get_post(request: Request, session: Session = Depends(get_db)):
     if request.state.IsAuthenticated:
-        return getPostsForUser(request.state.userId, session)
+        res = getPostsForUser(request.state.userId, session)
+        if res is None:
+            return []
+        return res
     else:
         raise HttpException(status_code=401, detail="You are not authenticated")
 
@@ -62,3 +67,17 @@ def getAllPostsHome(request: Request, session: Session = Depends(get_db)):
         return getAllPost(request.state.userId, session)
     else:
         raise HttpException(status_code=401, detail="You are not authenticated")
+
+@router.get("/get/{email}")
+def getAllPostsForUser(email: str, session: Session = Depends(get_db)):
+    res = getPostsForUsername(email, session)
+    if res is None:
+        raise HttpException(status_code=400, detail="There is no user with this username")
+    return res
+
+@router.get("/explore/")
+def getAllPostsExplore(session: Session = Depends(get_db)):
+    res = getRecentPosts(session)
+    if res is None:
+        raise HttpException(status_code=400, detail="something went wrong")
+    return res

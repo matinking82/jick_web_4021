@@ -65,6 +65,38 @@ def getPostsForUser(userId: int, session: Session):
     except Exception as e:
         print(e)
 
+def getPostsForUsername(email: str, session: Session):
+    try:
+        user = session.query(User).filter(User.email == email).first()
+        if user is None:
+            return []
+        posts = session.query(Post).filter(Post.id_sender == user.id).all()
+        if posts is None:
+            return []
+
+        result: list[PostResponse] = []
+        
+        for post in posts:
+            sender: User = session.query(User).filter(User.id == post.id_sender).first()
+            likes = (
+                session.query(postReaction)
+                .filter(postReaction.postId == post.id)
+                .filter(postReaction.can_like == True)
+                .all()
+            )
+            resPost = PostResponse(
+                id=post.id,
+                text=post.text,
+                senderId=post.id_sender,
+                create_date=str(post.create_date),
+                senderEmail=sender.email,
+                likes=len(likes),
+            )
+            result.append(resPost)        
+        
+        return result
+    except Exception as e:
+        print(e)
 
 def deletePost(postId: int, userId: int, session: Session):
     try:
@@ -156,3 +188,42 @@ def getAllPost(userId: int, session: Session):
     except Exception as e:
         print(e)
         return False
+
+
+def getRecentPosts(session: Session):
+    try:
+        all_post: list[Post] = list()
+        posts = session.query(Post).all()
+        all_post.append(posts)
+
+        # flatten list
+        all_post = [y for x in all_post for y in x]
+
+        # remove duplicate
+        all_post = list(dict.fromkeys(all_post))
+
+        # sort by date newest to oldest
+        all_post.sort(key=lambda x: x.create_date, reverse=True)
+
+        resAll: list[PostResponse] = list()
+        for post in all_post[:20]:  # Limit to 20 posts
+            sender: User = session.query(User).filter(User.id == post.id_sender).first()
+            likes = (
+                session.query(postReaction)
+                .filter(postReaction.postId == post.id)
+                .filter(postReaction.can_like == True)
+                .all()
+            )
+            resPost = PostResponse(
+                id=post.id,
+                text=post.text,
+                senderId=post.id_sender,
+                create_date=str(post.create_date),
+                senderEmail=sender.email,
+                likes=len(likes),
+            )
+            resAll.append(resPost)
+
+        return resAll
+    except Exception as e:
+        print(e)

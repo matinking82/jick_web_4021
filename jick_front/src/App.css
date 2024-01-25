@@ -40,3 +40,61 @@
 .read-the-docs {
   color: #888;
 }
+
+
+.post-main-card{
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 3rem 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 1rem #00000022;
+  background-color: #ffffff;
+}
+
+.main-nav{
+  width: 98vw!important;
+  margin: 0;
+  pad: 10px 20px;
+  position: fixed;
+  top: 0;
+}
+
+.search-user-card{
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 3rem 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 1rem #00000022;
+  background-color: #ffffff;
+}
+
+.create-post-form{
+  width: 90vw;
+  margin: 2rem auto;
+  padding: 3rem 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 1rem #00000022;
+  background-color: #ffffff;
+}
+
+.create-post-form textarea{
+  min-height: 200px!important;
+}
+.center-item{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.width-100{
+  width: 100%;
+}
+
+.user-profile-card{
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 4rem 3rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 1rem #00000022;
+  background-color: #ffffff;
+}

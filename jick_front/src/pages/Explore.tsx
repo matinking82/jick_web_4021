@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { GetHomePosts } from "../Api/Posts";
 import { Post } from "../interfaces/post";
 import PostCard from "../components/PostCard";
+import { GetExplorePosts } from "../Api/Posts";
 import NavBar from "../components/NavBar";
 
-const Home = () => {
-  const [posts, setPosts]: [Post[], any] = useState();
-
+const Explore = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
   useEffect(() => {
-    GetHomePosts().then((res) => {
+    GetExplorePosts().then((res) => {
       setPosts(res);
       console.log(res);
     });
@@ -16,10 +15,11 @@ const Home = () => {
 
   return (
     <>
-      <NavBar/>
+      <NavBar />
       <div>
-        <h1>Welcome to Jick web!!</h1>
-        {posts?.map((post: Post) => {
+        <h1>Explore New Posts</h1>
+        <h3>Here are some recently added posts to explore..</h3>
+        {posts.map((post: Post) => {
           return <PostCard post={post} />;
         })}
       </div>
@@ -27,4 +27,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Explore;
