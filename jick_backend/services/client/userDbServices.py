@@ -166,6 +166,13 @@ def followUser(user_id: int, username: str, session: Session):
         if userToFollow is None:
             return
         
+        #check if followed before
+        
+        follow = session.query(UserFollow).filter(UserFollow.followerId == user_id).filter(UserFollow.followingId == userToFollow.id).first()
+        
+        if follow is not None:
+            return
+        
         follow = UserFollow(
         followerId = user_id,
         followingId = userToFollow.id

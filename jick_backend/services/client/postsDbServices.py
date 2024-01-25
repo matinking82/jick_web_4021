@@ -117,6 +117,12 @@ def getAllPost(userId:int,session:Session):
             posts = session.query(Post).filter(Post.id_sender == user.followingId).all()
             all_post.append(posts)
         
+        #flatten list
+        all_post = [y for x in all_post for y in x]
+        
+        #remove duplicate
+        all_post = list(dict.fromkeys(all_post))
+        
         #sort by date newest to oldest
         all_post.sort(key=lambda x: x.create_date, reverse=True)
         
